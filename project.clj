@@ -1,4 +1,4 @@
-(defproject cayley-clj "0.1.0-SNAPSHOT"
+(defproject org.clojars.wgb/cayley-clj "0.1.0"
   :description "A Clojure library for Google Cayley"
   :url "http://github.com/wgb/cayley-clj"
   :license {:name "Eclipse Public License"
