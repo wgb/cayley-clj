@@ -30,7 +30,7 @@ This runs the query against Cayleys REST API as:
 ```
 g.V().Has("name","Burt Reynolds").In("/film/performance/actor").In("/film/film/starring").Tag("filmID").Out("name").Tag("name").Back("filmID").Out("type").All()
 ```
-##### Query Paths
+#### Query Paths
 Query also takes optional path/query arguments that are bound to vars in the query.
 Paths/Queries take the form of:
 ```clojure
@@ -39,11 +39,42 @@ Paths/Queries take the form of:
 
 Paths/Queries are referenced in the query by the string name that preceeds the path form. So, they are referenced with the "Follow", "FollowR", "Intersect", and "Union" verbs.
 
+#### Response
+##### Success
+```clojure
+{:result [{:key "val" :id "val"}...]}
+```
+
+##### Error
+Throws ex-info whose data is a map of the form:
+```clojure
+{:error response-body
+ :http-context {:header headers
+                :body request-body
+                :http-status response-status-code
+                :full-response full-response-object}}
+```
 
 Writes
 ------
 ```clojure
 (cayley/write [["subject" "predicate" "object"]["subject" "predicate" "object" "provenance"]...] "http://localhost:64210/api/v1/write")
+```
+
+#### Response
+##### Success
+```clojure
+{:result "Success message."}
+```
+
+##### Error
+Throws ex-info whose data is a map of the form:
+```clojure
+{:error response-body
+ :http-context {:header headers
+                :body request-body
+                :http-status response-status-code
+                :full-response full-response-object}}
 ```
 
 ## TODO
