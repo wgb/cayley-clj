@@ -1,5 +1,6 @@
 (ns cayley-clj.core
   (:require [clojure.string :as s]
+            [clojure.data.json :as json]
             [cayley-clj.http :as h]))
 
 (defn- shape-args
@@ -12,45 +13,6 @@
     (if (integer? args)
       args
       (format "\"%s\"" args))))
-
-;; (defn- verb-type
-;;   [[fname & args]]
-;;   (print-str [fname args])
-;;   (cond
-;;    (= :Follow fname) :verb-path
-;;    (string? fname) :obj
-;;    (and (keyword? fname) args (coll? (first args)) (keyword? (ffirst args))) :verb-fn-args
-;;    (and (keyword? fname) args (coll? (first args))) :verb-args
-;;    (and (keyword? fname) (nil? args)) :verb
-;;    (and (keyword? fname) args) :verb-arg
-;;    :else :verb))
-
-;; (defmulti shape-verbs
-;;   (fn [x] (verb-type x)))
-
-;; (defmethod shape-verbs :verb
-;;   [[fname & args]]
-;;   (format "%s()" (name fname)))
-
-;; (defmethod shape-verbs :obj
-;;   [[fname & args]]
-;;   (format "%s" fname))
-
-;; (defmethod shape-verbs :verb-arg
-;;   [[fname & args]]
-;;   (format "%s(%s)" (name fname) (shape-args (first args))))
-
-;; (defmethod shape-verbs :verb-args
-;;   [[fname & args]]
-;;   (format "%s(%s)" (name fname) (s/join "," (shape-args (first args)))))
-
-;; (defmethod shape-verbs :verb-fn-args
-;;   [[fname & args]]
-;;   (format "%s(%s)" (name fname) (shape-verbs (first args))))
-
-;; (defmethod shape-verbs :default
-;;   [[fname & args]]
-;;   (str fname))
 
 (defn- shape-verbs
   [[fname & args]]
@@ -66,11 +28,11 @@
       (format "%s()" (name fname)))
     (format "%s" fname)))
 
-(defn to-gremlin
+(defn- to-gremlin
   [q]
   (s/join "." (map shape-verbs q)))
 
-(defn build-path
+(defn- build-path
   [[varname path]]
   (format "var %s = %s" varname (to-gremlin path)))
 
@@ -80,3 +42,12 @@
     (let [paths-and-query (s/join "\r\n" (reverse (conj gremlin-paths (to-gremlin q))))]
       (h/send paths-and-query url))
     (h/send (to-gremlin q) url)))
+
+(defn- shape-triple-quad
+  [triple-quad]
+  (let [triple-keys [:subject :predicate :object :provenance]]
+    (zipmap triple-keys triple-quad)))
+
+(defn write
+  [triples-quads url]
+  (h/send (json/write-str (map shape-triple-quad triples-quads)) url))
