@@ -10,7 +10,7 @@ Currently, the library only supports the Javascript/Gremlin query syntax.
 
 Leiningen project.clj dependency:
 ```clojure
-[org.clojars.wgb/cayley-clj "0.1.0"]
+[org.clojars.wgb/cayley-clj "0.1.5"]
 ```
 
 Queries are formed using syntax similar to Javascript/Gremlin. A query takes the form of a vector of vectors. The subvectors are in the form of [verb args] where verb is either a string with no args, or a keyword with optional args that can be either a string or integer value, a vector of values, or a vector of the form [:verb & args].
