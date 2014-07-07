@@ -16,17 +16,17 @@
 
 (defn- shape-verbs
   [[fname & args]]
-  (if (keyword? fname)
-    (if args
-      (if-not (vector? (first args))
-        (if (contains? #{:Follow :FollowR :Intersect :Union} fname)
-          (format "%s(%s)" (name fname) (first args))
-          (format "%s(%s)" (name fname) (shape-args (first args))))
+  (if args
+    (if-not (vector? (first args))
+      (if (contains? #{:Follow :FollowR :Intersect :Union} fname)
+        (format "%s(%s)" (name fname) (first args))
+        (format "%s(%s)" (name fname) (shape-args (first args))))
+      (if (empty? (first args))
+        (format "%s()" (name fname))
         (if (keyword? (ffirst args))
-          (format "%s(%s)" (name fname) (shape-verbs (first args)))
-          (format "%s(%s)" (name fname) (s/join "," (shape-args (first args))))))
-      (format "%s()" (name fname)))
-    (format "%s" fname)))
+          (format "%s(%s)" (name fname) (s/join "." (map shape-verbs args)))
+          (format "%s(%s)" (name fname) (s/join "," (shape-args (first args)))))))
+    (name fname)))
 
 (defn- to-gremlin
   [q]

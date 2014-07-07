@@ -11,7 +11,7 @@ Currently, the library only supports the Javascript/Gremlin query syntax.
 Leiningen project.clj dependency:
 [![Clojars Project](http://clojars.org/org.clojars.wgb/cayley-clj/latest-version.svg)](http://clojars.org/org.clojars.wgb/cayley-clj)
 
-Queries are formed using syntax similar to Javascript/Gremlin. A query takes the form of a vector of vectors. The subvectors are in the form of [verb args] where verb is either a string with no args, or a keyword with optional args that can be either a string or integer value, a vector of values, or a vector of the form [:verb & args].
+Queries are formed using syntax similar to Javascript/Gremlin. A query takes the form of a vector of vectors. The subvectors are in the form of [:verb & args] where verb is a keyword with optional args that can be either a string or integer value, an empty vector (call verb with no args), a vector of values, or a vector of the form [:verb & args].
 
 For writes, triples/quads take the form of [subject predicate object provenance]. Provenance is optional. The write function takes a collection of triples/quads and the write url.
 
@@ -24,7 +24,7 @@ Using the 30kmovies NQuads file that comes with the Cayley distribution we would
 (ns some.namespace
 (:require [cayley-clj.core :as cayley]))
 ;; some fn...
-(cayley/query [["g"][:V][:Has ["name" "Burt Reynolds"]][:In "/film/performance/actor"][:In "/film/film/starring"][:Tag "filmID"][:Out "name"][:Tag "name"][:Back "filmID"][:Out "type"][:All]] "http://localhost:64210/api/v1/query/gremlin")
+(cayley/query [[:g][:V []][:Has ["name" "Burt Reynolds"]][:In "/film/performance/actor"][:In "/film/film/starring"][:Tag "filmID"][:Out "name"][:Tag "name"][:Back "filmID"][:Out "type"][:All []]] "http://localhost:64210/api/v1/query/gremlin")
 ```
 This runs the query against Cayleys REST API as:
 ```
@@ -34,7 +34,7 @@ g.V().Has("name","Burt Reynolds").In("/film/performance/actor").In("/film/film/s
 Query also takes optional path/query arguments that are bound to vars in the query.
 Paths/Queries take the form of:
 ```clojure
-["varname" [["g"][:Morphism]...]]
+["varname" [[:g][:Morphism []]...]]
 ```
 
 Paths/Queries are referenced in the query by the string name that preceeds the path form. So, they are referenced with the "Follow", "FollowR", "Intersect", and "Union" verbs.
