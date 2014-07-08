@@ -1,6 +1,6 @@
 # cayley-clj
 
-A clojure library for working with Google's Cayley graph database.
+A clojure library for working with [Google's Cayley](https://github.com/google/cayley) graph database.
 
 ## Status
 
