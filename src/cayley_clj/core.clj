@@ -3,16 +3,18 @@
             [clojure.data.json :as json]
             [cayley-clj.http :as h]))
 
+
+(defn- shape-arg [a]
+  (cond
+    (nil? a) "null"
+    (integer? a) a
+    :else (format "\"%s\"" a)))
+
 (defn- shape-args
   [args]
   (if (coll? args)
-    (map (fn [a]
-           (if (integer? a)
-             a
-             (format "\"%s\"" a))) args)
-    (if (integer? args)
-      args
-      (format "\"%s\"" args))))
+    (map shape-arg args)
+    (shape-arg args)))
 
 (defn- shape-verbs
   [[fname & args]]
